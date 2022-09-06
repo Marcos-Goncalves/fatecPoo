@@ -10,18 +10,26 @@ package entities;
  */
 public class Conta {
 
-    private String cliente;
+    private Cliente cliente;
     protected double saldo;
+    
+    public Conta(Cliente cliente){
+        this.cliente = cliente;
+    }
+    
+    public Conta() {
+        saldo = 0.0;
+    }
 
     public Conta(double saldo) {
         this.saldo = saldo;
     }
 
-    public void setCliente(String cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    public String getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
@@ -43,5 +51,12 @@ public class Conta {
 
     public String imprimeSaldo() {
         return "Saldo: " + saldo;
+    }
+    
+    public String imprimeSaldo(boolean comCliente){
+        if(comCliente){
+            return "Cliente: "+ cliente.dadosCompleto() + "\n" + imprimeSaldo();
+        } 
+        return imprimeSaldo();
     }
 }

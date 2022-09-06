@@ -4,7 +4,9 @@
  */
 package src;
 
+import entities.Cliente;
 import entities.Conta;
+import entities.Endereco;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,11 +16,20 @@ import javax.swing.JOptionPane;
 public class ProjetoConta {
 
     public static void main(String[] args) {
-        Conta conta = new Conta(0.0);
+        Conta conta;
         String opcoes = "";
         String[] menu = new String[]{"Depositar", "Sacar", "Saldo", "Sair"};
 
-        conta.setCliente(JOptionPane.showInputDialog("Digite o nome de usuário"));
+//        PASSANDO DADOS PELO CONSTRUTOR
+//        Cliente cliente = new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"),
+//                new Endereco(JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o cep: ")));
+
+//            VIA SET.ENDERECO
+//           Cliente cliente = new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"));
+//           cliente.setEndereco(new Endereco (JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o CEP: ")));
+
+        conta = new Conta(new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"), 
+                new Endereco (JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o CEP: "))));
 
         do {
             opcoes = (String) JOptionPane.showInputDialog(null, "Escolha uma opção:", "Menu", JOptionPane.QUESTION_MESSAGE, null, menu, menu[0]);
@@ -33,7 +44,7 @@ public class ProjetoConta {
                     break;
                 }
                 case "Saldo": {
-                    JOptionPane.showMessageDialog(null, conta.imprimeSaldo());
+                    JOptionPane.showMessageDialog(null, conta.imprimeSaldo(true));
                     break;
                 }
                 case "Sair": {
