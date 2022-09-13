@@ -6,6 +6,7 @@ package src;
 
 import entities.Cliente;
 import entities.Conta;
+import entities.ContaEspecial;
 import entities.Endereco;
 import javax.swing.JOptionPane;
 
@@ -17,6 +18,7 @@ public class ProjetoConta {
 
     public static void main(String[] args) {
         Conta conta;
+        Cliente cliente;
         String opcoes = "";
         String[] menu = new String[]{"Depositar", "Sacar", "Saldo", "Sair"};
 
@@ -28,8 +30,10 @@ public class ProjetoConta {
 //           Cliente cliente = new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"));
 //           cliente.setEndereco(new Endereco (JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o CEP: ")));
 
-        conta = new Conta(new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"), 
-                new Endereco (JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o CEP: "))));
+        cliente = new Cliente(JOptionPane.showInputDialog("Digite o nome de usuário"),JOptionPane.showInputDialog("Digite o CPF"));
+        cliente.setEndereco(new Endereco(JOptionPane.showInputDialog("Digite a rua: "), JOptionPane.showInputDialog("Digite o numero: "), JOptionPane.showInputDialog("Digite o CEP: ")));
+        
+        conta =  new ContaEspecial(1400, cliente);
 
         do {
             opcoes = (String) JOptionPane.showInputDialog(null, "Escolha uma opção:", "Menu", JOptionPane.QUESTION_MESSAGE, null, menu, menu[0]);
