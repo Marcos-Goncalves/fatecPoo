@@ -5,6 +5,8 @@
 
 package com.app.projeto;
 
+import janelas.Login;
+
 /**
  *
  * @author malxg
@@ -12,6 +14,6 @@ package com.app.projeto;
 public class Projeto {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        new Login().setVisible(true);
     }
 }
