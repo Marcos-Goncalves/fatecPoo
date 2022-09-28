@@ -4,23 +4,42 @@
  */
 package janelas;
 
+import entidades.Cliente;
+import entidades.Endereco;
+import entidades.Fornecedor;
+import entidades.Produto;
 import entidades.Usuario;
+import java.awt.event.ItemEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author malxg
  */
 public class Principal extends javax.swing.JFrame {
+    
+    private LinkedList<Cliente> listaClientes = new LinkedList<>();
+    private LinkedList<Usuario> listaUsuario = new LinkedList<>();
+    private LinkedList<Fornecedor> listaFornecedor = new LinkedList<>();
+    private LinkedList<Produto> listaProduto = new LinkedList<>();
+    private Usuario user;
+    private Fornecedor fornecedor;
+    private Produto produto;
+    private boolean novo = false;
+
 
     /**
      * Creates new form Principal
      */
-    public Principal() {
-        initComponents();
-    }
-
     public Principal(Usuario user) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        initComponents();
+        this.user = user;
+        listaUsuario.add(user);
+        btSalvar.setEnabled(false);
     }
     
    
@@ -34,6 +53,7 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenu3 = new javax.swing.JMenu();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -64,14 +84,18 @@ public class Principal extends javax.swing.JFrame {
         nascimento = new javax.swing.JFormattedTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
-        comboCliente = new javax.swing.JComboBox<>();
+        comboCliente = new javax.swing.JComboBox();
         btNovo = new javax.swing.JButton();
         btSalvar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuSair = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        menuCadastroFornecedor = new javax.swing.JMenuItem();
         menuCadastroUsuario = new javax.swing.JMenuItem();
+        menuCadastroProduto = new javax.swing.JMenuItem();
+
+        jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -256,6 +280,12 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel1.setText("Clientes:");
 
+        comboCliente.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboClienteItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -335,6 +365,11 @@ public class Principal extends javax.swing.JFrame {
 
         menuSair.setMnemonic('s');
         menuSair.setText("Sair");
+        menuSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSairActionPerformed(evt);
+            }
+        });
         jMenu1.add(menuSair);
 
         jMenuBar1.add(jMenu1);
@@ -342,9 +377,32 @@ public class Principal extends javax.swing.JFrame {
         jMenu2.setMnemonic('c');
         jMenu2.setText("Cadastro");
 
+        menuCadastroFornecedor.setMnemonic('f');
+        menuCadastroFornecedor.setText("Cadastro de Fornecedor");
+        menuCadastroFornecedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCadastroFornecedorActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuCadastroFornecedor);
+
         menuCadastroUsuario.setMnemonic('u');
         menuCadastroUsuario.setText("Cadastro de Usuário");
+        menuCadastroUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCadastroUsuarioActionPerformed(evt);
+            }
+        });
         jMenu2.add(menuCadastroUsuario);
+
+        menuCadastroProduto.setMnemonic('p');
+        menuCadastroProduto.setText("Cadastro de Produto");
+        menuCadastroProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCadastroProdutoActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuCadastroProduto);
 
         jMenuBar1.add(jMenu2);
 
@@ -371,7 +429,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void estadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_estadoActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:telefone
     }//GEN-LAST:event_estadoActionPerformed
 
     private void numeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroActionPerformed
@@ -380,11 +438,128 @@ public class Principal extends javax.swing.JFrame {
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
         // TODO add your handling code here:
+        Cliente cliente = null;
+        Endereco endereco = null;
+        
+        //Verificando se o processo é para um novo Cliente ou não
+        //Se sim instancia cliente e endereco se não usa o selecionado
+        if(novo){
+            cliente = new Cliente();
+            endereco = new Endereco();
+        } else {
+            cliente = (Cliente) comboCliente.getSelectedItem();
+            endereco = cliente.getEndereco();
+        }
+        
+        //Recupera as informações do cliente
+        cliente.setCpf(cpf.getText());
+        cliente.setEmail(email.getText());
+        cliente.setNome(nome.getText());
+        cliente.setTelefone(telefone.getText());
+        
+        //O usuario devera ser o logado no sistema
+        cliente.setUsuario(user);
+        
+        //Tratando dados no java
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        
+        try{
+            cliente.setNascimento(format.parse(nascimento.getText()));
+        } catch (ParseException ex){
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //Recuperação das info do endereço
+        endereco.setBairro(bairro.getText());
+        endereco.setCep(cep.getText());
+        endereco.setCidade(cidade.getText());
+        endereco.setComplemento(complemento.getText());
+        endereco.setEstado(estado.getText());
+        endereco.setNumero(numero.getText());
+        endereco.setRua(rua.getText());
+        
+        //Vinculação do endereço ao cliente
+        cliente.setEndereco(endereco);
+        
+        if(novo){
+            //Insere novo cliente na estrutura de dados
+            listaClientes.add(cliente);
+            
+            //Exibição do novo cliente no combo de seleção de cliente
+            comboCliente.addItem(cliente);
+            
+            //Selecionar o item inserido
+            comboCliente.setSelectedItem(cliente);
+        }
+        
+        btNovo.setEnabled(true);
+        
+        
+        
+        
     }//GEN-LAST:event_btSalvarActionPerformed
 
     private void btNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoActionPerformed
         // TODO add your handling code here:
+        novo = true;
+        btSalvar.setEnabled(true);
+        btNovo.setEnabled(false);
     }//GEN-LAST:event_btNovoActionPerformed
+
+    private void comboClienteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboClienteItemStateChanged
+        // TODO add your handling code here:
+        //Verifica se o cliente foi selecionado
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            
+            //Recupera o cliente selecionado
+            Cliente cliente = (Cliente) comboCliente.getSelectedItem();
+            
+            nome.setText(cliente.getNome());
+            cpf.setText(cliente.getCpf());
+            email.setText(cliente.getEmail());
+            telefone.setText(cliente.getTelefone());
+            
+            //Tratando datas no java usando classe SimpleDateFormat
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            
+            nascimento.setText(format.format(cliente.getNascimento()));
+            
+            rua.setText(cliente.getEndereco().getRua());
+            cep.setText(cliente.getEndereco().getCep());
+            bairro.setText(cliente.getEndereco().getBairro());
+            cidade.setText(cliente.getEndereco().getCidade());
+            complemento.setText(cliente.getEndereco().getComplemento());
+            numero.setText(cliente.getEndereco().getNumero());
+            estado.setText(cliente.getEndereco().getEstado());
+            
+            //Habilitar o botao salvar para alteração
+            btSalvar.setEnabled(true);
+            btNovo.setEnabled(true);
+            
+            novo = false;
+            
+        }
+    }//GEN-LAST:event_comboClienteItemStateChanged
+
+    private void menuCadastroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCadastroUsuarioActionPerformed
+        // TODO add your handling code here:
+        new CadastroUsuario(listaUsuario, user).setVisible(true);
+    }//GEN-LAST:event_menuCadastroUsuarioActionPerformed
+
+    private void menuSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSairActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_menuSairActionPerformed
+
+    private void menuCadastroFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCadastroFornecedorActionPerformed
+        // TODO add your handling code here:
+        new CadastroFornecedor(listaFornecedor, fornecedor).setVisible(true);
+    }//GEN-LAST:event_menuCadastroFornecedorActionPerformed
+
+    private void menuCadastroProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCadastroProdutoActionPerformed
+        // TODO add your handling code here:
+        new CadastroProduto(listaProduto, listaFornecedor, produto).setVisible(true);
+    }//GEN-LAST:event_menuCadastroProdutoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -416,7 +591,7 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+                new Principal(null).setVisible(true);
             }
         });
     }
@@ -427,7 +602,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btSalvar;
     private javax.swing.JTextField cep;
     private javax.swing.JTextField cidade;
-    private javax.swing.JComboBox<String> comboCliente;
+    private javax.swing.JComboBox comboCliente;
     private javax.swing.JTextField complemento;
     private javax.swing.JFormattedTextField cpf;
     private javax.swing.JTextField email;
@@ -447,12 +622,15 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JMenuItem menuCadastroFornecedor;
+    private javax.swing.JMenuItem menuCadastroProduto;
     private javax.swing.JMenuItem menuCadastroUsuario;
     private javax.swing.JMenuItem menuSair;
     private javax.swing.JFormattedTextField nascimento;

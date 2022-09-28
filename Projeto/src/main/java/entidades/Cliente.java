@@ -4,7 +4,7 @@
  */
 package entidades;
 
-import javax.xml.crypto.Data;
+import java.util.Date;
 
 /**
  *
@@ -16,7 +16,7 @@ public class Cliente {
     private Endereco endereco;
     private String telefone;
     private String email;
-    private Data nascimento;
+    private Date nascimento;
     private Usuario usuario;
 
     public String getNome() {
@@ -59,11 +59,11 @@ public class Cliente {
         this.email = email;
     }
 
-    public Data getNascimento() {
+    public Date getNascimento() {
         return nascimento;
     }
 
-    public void setNascimento(Data nascimento) {
+    public void setNascimento(Date nascimento) {
         this.nascimento = nascimento;
     }
 
@@ -73,6 +73,11 @@ public class Cliente {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+    
+     @Override
+    public String toString(){
+        return nome;
     }
     
     

@@ -4,17 +4,41 @@
  */
 package janelas;
 
+import entidades.Usuario;
+import java.awt.event.ItemEvent;
+import java.util.LinkedList;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author malxg
  */
 public class CadastroUsuario extends javax.swing.JFrame {
+    private LinkedList<Usuario> listaUsuarios;
+    private Usuario user;
+    private boolean novo = false;
 
     /**
      * Creates new form CadastroUsuario
      */
-    public CadastroUsuario() {
+    public CadastroUsuario(LinkedList listaUsuarios, Usuario user) {
         initComponents();
+        this.listaUsuarios = listaUsuarios;
+        this.user = user;
+        
+        
+        //Verifica se é administrador "1"
+        if(user.getNivel() == 1){
+            comboUsuario.setModel(new DefaultComboBoxModel(listaUsuarios.toArray()));
+            btNovo.setEnabled(true);
+        }else{
+            comboUsuario.addItem(user);
+            btNovo.setEnabled(false);
+            nivel.setEnabled(false);
+        }
+        
+        login.setEnabled(false);
+        comboUsuario.setSelectedItem(user);
     }
 
     /**
@@ -29,7 +53,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
-        comboUsuario = new javax.swing.JComboBox<>();
+        comboUsuario = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -41,11 +65,17 @@ public class CadastroUsuario extends javax.swing.JFrame {
         btNovo = new javax.swing.JButton();
         btSalvar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados de Usuário"));
 
         jLabel1.setText("Usuário:");
+
+        comboUsuario.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboUsuarioItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setText("Nome:");
 
@@ -124,6 +154,11 @@ public class CadastroUsuario extends javax.swing.JFrame {
         );
 
         btNovo.setText("Novo");
+        btNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNovoActionPerformed(evt);
+            }
+        });
 
         btSalvar.setText("Salvar");
         btSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -167,8 +202,63 @@ public class CadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_nomeActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
-        // TODO add your handling code here:
+        //Declaração das variáveis utilizados no método
+        Usuario usuario = null;
+        
+        //Verificando se o processo é para um novo
+        if(novo){
+            usuario = new Usuario();
+            usuario.setLogin(login.getText());
+        }else{
+            usuario = (Usuario) comboUsuario.getSelectedItem();
+        }
+        
+        usuario.setNome(nome.getText());
+        usuario.setSenha(new String(senha.getPassword()));
+        usuario.setNivel(nivel.getSelectedItem().equals("Administrador") ? 1:2);
+        
+        if(novo) {
+            listaUsuarios.add(usuario);
+            comboUsuario.addItem(usuario);
+            comboUsuario.setSelectedItem(usuario);
+        }
     }//GEN-LAST:event_btSalvarActionPerformed
+
+    private void btNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoActionPerformed
+        // TODO add your handling code here:
+        novo = true;
+        btSalvar.setEnabled(true);
+        btNovo.setEnabled(false);
+        
+        login.setEnabled(true);
+        nivel.setEnabled(true);
+        
+        nome.setText("");
+        login.setText("");
+        senha.setText("");
+    }//GEN-LAST:event_btNovoActionPerformed
+
+    private void comboUsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboUsuarioItemStateChanged
+        // TODO add your handling code here:
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            Usuario usuario = (Usuario) comboUsuario.getSelectedItem();
+            
+            nome.setText(usuario.getNome());
+            login.setText(usuario.getLogin());
+            senha.setText(usuario.getSenha());
+            nivel.setSelectedIndex(usuario.getNivel() - 1);
+            
+            login.setEnabled(false);
+            
+            //Verifica se é adm "1"
+            if(user.getNivel() == 1 && !user.equals(usuario)){
+                nivel.setEnabled(true);
+            }else{
+                nivel.setEnabled(false);
+            }
+            
+        }
+    }//GEN-LAST:event_comboUsuarioItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -200,7 +290,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CadastroUsuario().setVisible(true);
+                new CadastroUsuario(null, null).setVisible(true);
             }
         });
     }
@@ -208,7 +298,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btNovo;
     private javax.swing.JButton btSalvar;
-    private javax.swing.JComboBox<String> comboUsuario;
+    private javax.swing.JComboBox comboUsuario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
